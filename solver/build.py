@@ -5,6 +5,7 @@
 """
 
 import torch
+import SGD
 
 
 def make_optimizer(cfg, model):
@@ -20,8 +21,10 @@ def make_optimizer(cfg, model):
         params += [{"params": [value], "lr": lr, "weight_decay": weight_decay}]
     if cfg.SOLVER.OPTIMIZER_NAME == 'SGD':
         optimizer = getattr(torch.optim, cfg.SOLVER.OPTIMIZER_NAME)(params, momentum=cfg.SOLVER.MOMENTUM)
-    else:
-        optimizer = getattr(torch.optim, cfg.SOLVER.OPTIMIZER_NAME)(params)
+    elif cfg.SOLVER.OPTIMIZER_NAME == 'SGD_GCC': 
+        optimizer = getattr(SGD, cfg.SOLVER.OPTIMIZER_NAME)(params, momentum=cfg.SOLVER.MOMENTUM)             
+    elif cfg.SOLVER.OPTIMIZER_NAME == 'Adam':
+        optimizer = getattr(torch.optim, cfg.SOLVER.OPTIMIZER_NAME)(params)          
     return optimizer
 
 
@@ -38,7 +41,9 @@ def make_optimizer_with_center(cfg, model, center_criterion):
         params += [{"params": [value], "lr": lr, "weight_decay": weight_decay}]
     if cfg.SOLVER.OPTIMIZER_NAME == 'SGD':
         optimizer = getattr(torch.optim, cfg.SOLVER.OPTIMIZER_NAME)(params, momentum=cfg.SOLVER.MOMENTUM)
-    else:
-        optimizer = getattr(torch.optim, cfg.SOLVER.OPTIMIZER_NAME)(params)
+    elif cfg.SOLVER.OPTIMIZER_NAME == 'SGD_GCC': 
+        optimizer = getattr(SGD, cfg.SOLVER.OPTIMIZER_NAME)(params, momentum=cfg.SOLVER.MOMENTUM)             
+    elif cfg.SOLVER.OPTIMIZER_NAME == 'Adam':
+        optimizer = getattr(torch.optim, cfg.SOLVER.OPTIMIZER_NAME)(params)       
     optimizer_center = torch.optim.SGD(center_criterion.parameters(), lr=cfg.SOLVER.CENTER_LR)
     return optimizer, optimizer_center
